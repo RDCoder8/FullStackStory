@@ -30,20 +30,21 @@ class Actor {
         }
     }
     attack(opponent) {
-        messageArray.push(`${this.name} has attacked ${opponent.name} for ${this.attackPower}`)
+        messageArray.push(`${this.name} has attacked ${opponent.name} for ${this.attackPower} damage`)
         opponent.lifePoints -= this.attackPower
         opponent.checkLP()
     }
 }
 
+/////////////////Player
 class SoftwareEngineer extends Actor {
     constructor(name, attackPower, lifePoints, hasPartner = false, partner = {}) {
         super(name, attackPower, lifePoints)
         this.summonsArray = [
             {
                 name: 'Instructor',
-                banter: `Cool. Cool. Cool. - ${this.name}`,
-                message: `The ${this.name}'s rapid cooling technique has chilled the code beast!`,
+                banter: `"Cool. Cool. Cool." - Instructor`,
+                message: `The Instructor's rapid cooling technique has chilled the code beast!`,
                 attackPower: 3,
                 specialEffect(opponent) {
                     opponent.chilled = true
@@ -51,8 +52,8 @@ class SoftwareEngineer extends Actor {
             },
             {
                 name: 'Assistant Instructor',
-                banter: `Sorry, the cats are outta my control - ${this.name}`,
-                message: `The ${this.name}s' feline minions have assaulted the code beast!`,
+                banter: `"Sorry, the cats are outta my control" - Assistant Instructor`,
+                message: `The Assistant Instructors' feline minions have assaulted the code beast!`,
                 attackPower: 3,
                 specialEffect(opponent) {
                     opponent.afraid = true
@@ -60,8 +61,8 @@ class SoftwareEngineer extends Actor {
             },
             {
                 name: 'RTT-25 Squad',
-                banter: `Discord Chat is now open`,
-                message: `Random members of the ${this.name} ganged up on the code beast in Discord Chat`,
+                banter: `"Discord Chat is now open!!!" - Problem Solver`,
+                message: `Random members of RTT-25 ganged up on the code beast in Discord Chat. It was definitely bullying.`,
                 attackPower: random()
             }]
         this.hasPartner = hasPartner
@@ -73,41 +74,48 @@ class SoftwareEngineer extends Actor {
         ]
     }
     summonAttack(opponent) {
+        disableButtons = true
         this.attack(opponent)
         if (this.hasPartner) {
             opponent.lifePoints -= this.partner.attackPower
-            `${this.partner.name} attacked ${opponent.name} for ${this.partner.attackPower}`
-            if (this.partner.specialEffect(opponent)) {
+            if (this.partner.specialEffect) {
                 this.partner.specialEffect(opponent)
             }
-            this.partner.banter
-            this.partner.message
-            `${this.partner.name} leaves to fight their own code beasts.`
+            messageArray.push(this.partner.banter, `${this.partner.name} attacked ${opponent.name} for ${this.partner.attackPower} damage`, this.partner.message, `${this.partner.name} leaves to fight their own code beasts.`)
             this.partner = {}
             this.hasPartner = false
             opponent.checkLP()
         }
     }
     procrastinate() {
+        disableButtons = true
+        messageArray.push(`${this.name} decided to rest. They gained 5 life points!`)
         this.lifePoints += 5
         this.lazyCount += 1
     }
     research(opponent) {
+        disableButtons = true
         this.attackPower += 2
-        messageArray.push(`${this.name}'s has done some research about ${opponent.name}. Their attack power has increased by 2!`)
+        messageArray.push(`${this.name} has done some research about ${opponent.name}. Your attack power has increased by 2!`)
     }
     summon(opponent) {
+        disableButtons = true
         if (!this.hasPartner) {
+            this.setPartner()
             this.hasPartner = true
-            this.partner = this.summonsArray[Math.floor(Math.random() * 3)]
-            `${this.name} has summoned ${this.partner.name} to combat the code beast!`
+            messageArray.push(`${this.name} has summoned ${this.partner.name} to help combat the code beast!`)
         } else {
-            `You've already got an ally! So you attacked with them instead!`
+            messageArray.push(`You've already got an ally! So you attacked with them instead!`)
             this.summonAttack(opponent)
         }
     }
+    setPartner() {
+        let newPartner = this.summonsArray[Math.floor(Math.random() * 3)]
+        this.partner = newPartner
+    }
 }
 
+////////Enemy
 class FrontendFiend extends Actor {
     constructor(name, attackPower, lifePoints, chilled = false, afraid = false) {
         super(name, attackPower, lifePoints)
@@ -116,19 +124,34 @@ class FrontendFiend extends Actor {
         this.poweredUp = false
         this.banterArray = [`T-t-that d-doesn't matter! I'll show you! - ${this.name}`, `S-shut up and code you loser! ${this.name}`, `Your research changes nothing! You still can't beat me. - ${this.name}` ]
     }
+    monsterAttack() {
+        if (chilled) {
+            messageArray.push(`Brrr! It's so cold! - ${this.name}`, `${this.name} has to warm himself up to attack`)
+            this.chilled = false
+        }
+        if (afraid) {
+            messageArray.push(`No, no, no! Not the cats! Not again! - ${this.name}`, `${this.name} is too busy fighting his own fear to attack!`)
+            this.afraid = false
+        }
+    }
     deadlineCharge() {
         this.attackPower = 999999999
+        this.poweredUp = true
     }
     checkLazyCount(opponent) {
-        if (opponent.lazyCount === 3) {
-            
+        if (opponent.lazyCount === 3 && !this.poweredUp) {
+            this.deadlineCharge()
+            messageArray.push(`You're mine now slacker!!!! - ${this.name}`, `${this.name}'s attack power has massively increased!`)
         }
     }
 }
 
 //DOM Elements
 const textArea = document.getElementById('textarea')
-const attackButton = document.getElementById('')
+const attackButton = document.getElementById('attack')
+const researchButton = document.getElementById('research')
+const summonButton = document.getElementById('summon')
+const procrastinateButton = document.getElementById('procrastinate')
 
 //Game variables
 let gameOver = false //Game over variable
@@ -136,6 +159,7 @@ let disableButtons = true //Story variable to disable clicking on buttons
 let messageArray = [] //An empty string
 let num //A number to be assigned later
 let playerName = 'Fresh Software Engineer'
+let intro = true
 
 const player = new SoftwareEngineer(playerName, 1, 20)
 const codeBeast = new FrontendFiend('Frontend Fiend', 3, 30)
@@ -143,7 +167,6 @@ const codeBeast = new FrontendFiend('Frontend Fiend', 3, 30)
 
 //Functions
 function displayMessage() { //Used to display messages in textArea
-    clearMessage()
     if (messageArray.length > 0) {
         let message = messageArray.shift()
         textArea.innerHTML = `<p>${message}</p>`
@@ -161,11 +184,59 @@ function random() {
 
 
 //Event Listeners
+attackButton.addEventListener('click', ()=> { //Attack button
+    if (!disableButtons) {
+        player.summonAttack(codeBeast)
+        displayMessage()
+        if (codeBeast.lifePoints > 0) {
+            codeBeast.attack(player)
+        }
+    }
+    if (gameOver) {
+        disableButtons = true
+    }
+})
 
+summonButton.addEventListener('click', ()=> { //Summon button
+    if (!disableButtons) {
+        player.summon(codeBeast)
+        displayMessage()
+        codeBeast.attack(player)
+    }
+    if (gameOver) {
+        disableButtons = true
+    }
+})
+
+researchButton.addEventListener('click', ()=> { //Research button
+    if (!disableButtons) {
+        player.research(codeBeast)
+        displayMessage()
+        codeBeast.attack(player)
+    }
+    if (gameOver) {
+        disableButtons = true
+    }
+})
+
+procrastinateButton.addEventListener('click', ()=> { //Procrasinate button
+    if (!disableButtons) {
+        player.procrastinate()
+        displayMessage()
+        codeBeast.attack(player)
+    }
+    if (gameOver) {
+        disableButtons = true
+    }
+})
 
 textArea.addEventListener('click', () => {
+    clearMessage()
     if (disableButtons) {
         displayMessage()
+    }
+    if (messageArray.length === 0 && !gameOver) {
+        disableButtons = false
     }
 })
 
@@ -173,3 +244,4 @@ textArea.addEventListener('click', () => {
 messageArray.push('Story Stuff')
 messageArray.push('More Story Stuff')
 messageArray.push('Even More Story Stuff')
+displayMessage()

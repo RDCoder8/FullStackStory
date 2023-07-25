@@ -32,10 +32,17 @@ body {
     align-items: center;
 }
 
-li {
-    list-style: none;
+button {
     border: 1px solid;
-    margin-top: 2px;
+    margin-top: .5rem;
+    display: block;
+    width: 100%;
+    height: 2rem;
+}
+
+button:hover {
+    background-color: green;
+    cursor: pointer;
 }
 
 #player-actor {
@@ -60,4 +67,9 @@ li {
 
 #textarea > p {
     font-size: 2rem;
+}
+
+img {
+    height: 100%;
+    width: 100%;
 }
