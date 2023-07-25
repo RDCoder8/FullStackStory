@@ -11,6 +11,8 @@ Win-lose conditions will determine the ending of the story but the player can se
 Player Attack Methods include Attack, Research, Summon, and Procrasinate.
 CodeBeast Attack Methods will be Attack and Deadline Charge
 
+Losing conditions: Get knocked because the player never called for help or research, Get knocked out because the player procrasinated too much
+
 Stretch Goals: Add animations. Give a score. 
 */
 
@@ -24,11 +26,11 @@ class Actor {
         if (this.lifePoints < 0) {
             gameOver = true
         } else {
-            return `${this.name} has ${this.lifePoints} life points left!`
+            messageArray.push(`${this.name} has ${this.lifePoints} life points left!`)
         }
     }
     attack(opponent) {
-        `${this.name} has attacked ${opponent.name} for ${this.attackPower}`
+        messageArray.push(`${this.name} has attacked ${opponent.name} for ${this.attackPower}`)
         opponent.lifePoints -= this.attackPower
         opponent.checkLP()
     }
@@ -59,12 +61,13 @@ class SoftwareEngineer extends Actor {
             {
                 name: 'RTT-25 Squad',
                 banter: `Discord Chat is now open`,
-                message: `Random members of the ${this.name} ganged up on the code beast in Discord Chat`
-
+                message: `Random members of the ${this.name} ganged up on the code beast in Discord Chat`,
+                attackPower: random()
             }]
         this.hasPartner = hasPartner
-        this.partner = partner 
-        banterArray = [`Your real name is Clarence? And you live with your parents? - ${this.name}`,
+        this.partner = partner
+        this.lazyCount = 0
+        this.banterArray = [`Your real name is Clarence? And you live with your parents? - ${this.name}`,
         `It says here you lost a fight to a... cat? Seriously? - ${this.name}`,
         `Hmm. So that's your weakpoint? I can fight you better now. - ${this.name}`
         ]
@@ -87,10 +90,11 @@ class SoftwareEngineer extends Actor {
     }
     procrastinate() {
         this.lifePoints += 5
+        this.lazyCount += 1
     }
     research(opponent) {
         this.attackPower += 2
-        return `${this.name}'s has done some research about ${opponent.name}. Their attack power has increased by 2!`
+        messageArray.push(`${this.name}'s has done some research about ${opponent.name}. Their attack power has increased by 2!`)
     }
     summon(opponent) {
         if (!this.hasPartner) {
@@ -105,12 +109,67 @@ class SoftwareEngineer extends Actor {
 }
 
 class FrontendFiend extends Actor {
-    constructor(name, attackPower, lifePoints, chilled = false) {
+    constructor(name, attackPower, lifePoints, chilled = false, afraid = false) {
         super(name, attackPower, lifePoints)
         this.chilled = chilled
-        banterArray = [`T-t-that d-doesn't matter! I'll show you! - ${this.name}`,]
+        this.afraid = afraid
+        this.poweredUp = false
+        this.banterArray = [`T-t-that d-doesn't matter! I'll show you! - ${this.name}`, `S-shut up and code you loser! ${this.name}`, `Your research changes nothing! You still can't beat me. - ${this.name}` ]
+    }
+    deadlineCharge() {
+        this.attackPower = 999999999
+    }
+    checkLazyCount(opponent) {
+        if (opponent.lazyCount === 3) {
+            
+        }
     }
 }
 
+//DOM Elements
+const textArea = document.getElementById('textarea')
+const attackButton = document.getElementById('')
 
-let gameOver = false
+//Game variables
+let gameOver = false //Game over variable
+let disableButtons = true //Story variable to disable clicking on buttons
+let messageArray = [] //An empty string
+let num //A number to be assigned later
+let playerName = 'Fresh Software Engineer'
+
+const player = new SoftwareEngineer(playerName, 1, 20)
+const codeBeast = new FrontendFiend('Frontend Fiend', 3, 30)
+
+
+//Functions
+function displayMessage() { //Used to display messages in textArea
+    clearMessage()
+    if (messageArray.length > 0) {
+        let message = messageArray.shift()
+        textArea.innerHTML = `<p>${message}</p>`
+    }
+}
+
+function clearMessage() {
+    textArea.innerHTML = ''
+}
+
+function random() {
+    num = Math.floor(Math.random() * 6) + 3
+    return num
+}
+
+
+//Event Listeners
+
+
+textArea.addEventListener('click', () => {
+    if (disableButtons) {
+        displayMessage()
+    }
+})
+
+
+messageArray.push('Story Stuff')
+messageArray.push('More Story Stuff')
+messageArray.push('Even More Story Stuff')
