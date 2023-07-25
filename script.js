@@ -21,18 +21,28 @@ class Actor {
         this.name = name
         this.attackPower = attackPower
         this.lifePoints = lifePoints
+        this.banterArray =[]
     }
-    checkLP() {
-        if (this.lifePoints < 0) {
+    checkLP() { //displays current life points and checks for gameOver condition
+        messageArray.push(`${this.name} has ${this.lifePoints} life points left!`)
+        if (this.lifePoints <= 0) {
             gameOver = true
-        } else {
-            messageArray.push(`${this.name} has ${this.lifePoints} life points left!`)
+            disableButtons = true
+            if (player.lifePoints <= 0) {
+                messageArray.push(`${player.name} crumpled at their desk, eyes rolled to the back of their head.`, `${codeBeast.name} has toppled another budding developer.`, `But will they give up? Can ${player.name} rise again to fight the ${codeBeast.name}?`)
+            } else {
+                messageArray.push(`${player.name} has crushed the the code beast with through thoughtful strategy.`)
+            }
         }
     }
     attack(opponent) {
         messageArray.push(`${this.name} has attacked ${opponent.name} for ${this.attackPower} damage`)
         opponent.lifePoints -= this.attackPower
         opponent.checkLP()
+    }
+    researchBanter() {
+        let banter = this.banterArray[Math.floor(Math.random() * 3)]
+        messageArray.push(banter)
     }
 }
 
@@ -68,9 +78,9 @@ class SoftwareEngineer extends Actor {
         this.hasPartner = hasPartner
         this.partner = partner
         this.lazyCount = 0
-        this.banterArray = [`Your real name is Clarence? And you live with your parents? - ${this.name}`,
-        `It says here you lost a fight to a... cat? Seriously? - ${this.name}`,
-        `Hmm. So that's your weakpoint? I can fight you better now. - ${this.name}`
+        this.banterArray = [`"Your real name is Clarence? And you live with your parents?" - ${this.name}`,
+        `"It says here you lost a fight to a... cat? Seriously?" - ${this.name}`,
+        `"Hmm. So that's your weakpoint? I can fight you better now." - ${this.name}`
         ]
     }
     summonAttack(opponent) {
@@ -122,16 +132,23 @@ class FrontendFiend extends Actor {
         this.chilled = chilled
         this.afraid = afraid
         this.poweredUp = false
-        this.banterArray = [`T-t-that d-doesn't matter! I'll show you! - ${this.name}`, `S-shut up and code you loser! ${this.name}`, `Your research changes nothing! You still can't beat me. - ${this.name}` ]
+        this.banterArray = [`"T-t-that d-doesn't matter! I'll show you!" - ${this.name}`, `"S-shut up and code, you loser!" - ${this.name}`, `"Your research changes nothing! You still can't beat me." - ${this.name}` ]
     }
-    monsterAttack() {
-        if (chilled) {
-            messageArray.push(`Brrr! It's so cold! - ${this.name}`, `${this.name} has to warm himself up to attack`)
+    monsterAttack(opponent) {
+        if (this.chilled) {
+            messageArray.push(`"Brrr! It's so cold!" - ${this.name}`, `${this.name} has to warm himself up to attack`)
             this.chilled = false
+            return
         }
-        if (afraid) {
-            messageArray.push(`No, no, no! Not the cats! Not again! - ${this.name}`, `${this.name} is too busy fighting his own fear to attack!`)
+        if (this.afraid) {
+            messageArray.push(`"No, no, no! Not the cats! Not again!" - ${this.name}`, `${this.name} is too busy fighting his own fear to attack!`)
             this.afraid = false
+            return
+        }
+        if (opponent.hasPartner) {
+            messageArray.push(`"Your little ${opponent.partner.name} can't save you!" - ${this.name}`)
+            this.attack(opponent)
+            return
         }
     }
     deadlineCharge() {
@@ -139,9 +156,12 @@ class FrontendFiend extends Actor {
         this.poweredUp = true
     }
     checkLazyCount(opponent) {
-        if (opponent.lazyCount === 3 && !this.poweredUp) {
+        if (opponent.lazyCount === 2) {
+            
+        }
+        if (opponent.lazyCount === 4 && !this.poweredUp) {
             this.deadlineCharge()
-            messageArray.push(`You're mine now slacker!!!! - ${this.name}`, `${this.name}'s attack power has massively increased!`)
+            messageArray.push(`"You're mine now slacker!!!!" - ${this.name}`, `${this.name}'s attack power has massively increased!`)
         }
     }
 }
@@ -152,6 +172,8 @@ const attackButton = document.getElementById('attack')
 const researchButton = document.getElementById('research')
 const summonButton = document.getElementById('summon')
 const procrastinateButton = document.getElementById('procrastinate')
+const playerActor = document.getElementById('player-pic')
+const enemyActor = document.getElementById('enemy-actor')
 
 //Game variables
 let gameOver = false //Game over variable
@@ -162,7 +184,7 @@ let playerName = 'Fresh Software Engineer'
 let intro = true
 
 const player = new SoftwareEngineer(playerName, 1, 20)
-const codeBeast = new FrontendFiend('Frontend Fiend', 3, 30)
+const codeBeast = new FrontendFiend('Frontend Fiend', 20, 30)
 
 
 //Functions
@@ -211,7 +233,9 @@ summonButton.addEventListener('click', ()=> { //Summon button
 researchButton.addEventListener('click', ()=> { //Research button
     if (!disableButtons) {
         player.research(codeBeast)
+        player.researchBanter()
         displayMessage()
+        codeBeast.researchBanter()
         codeBeast.attack(player)
     }
     if (gameOver) {
@@ -235,13 +259,23 @@ textArea.addEventListener('click', () => {
     if (disableButtons) {
         displayMessage()
     }
+    if (messageArray.length === 0 && intro) {
+        intro = false
+        playerActor.innerHTML = `<img src="/images/coder.jpg" alt="">`
+        enemyActor.innerHTML = `<img src="/images/monster.png" alt="">`
+    }
     if (messageArray.length === 0 && !gameOver) {
         disableButtons = false
+    }
+    if (messageArray.length === 2 && player.lifePoints <= 0) {
+        playerActor.innerHTML = `<img src="/images/Hopeless-man.png" alt="">`
     }
 })
 
 
-messageArray.push('Story Stuff')
-messageArray.push('More Story Stuff')
-messageArray.push('Even More Story Stuff')
+messageArray.push('Story Stuff', 'More Story Stuff', 'Even More Story Stuff')
 displayMessage()
+if (intro) {
+    playerActor.innerHTML = ''
+    enemyActor.innerHTML = ''
+}
