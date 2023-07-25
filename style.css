@@ -2,3 +2,53 @@
     margin: 0;
     padding: 0;
 }
+
+body {
+    display: flex;
+    justify-content: center;
+}
+
+#game-screen {
+    width: 80%;
+    height: 90vh;
+    border: 2px dotted blue;
+    padding: 10px;
+}
+
+#stage {
+    height: 75%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#textarea {
+    margin-top: 10px;
+    height: 100px;
+    border: 2px solid red;
+}
+
+li {
+    list-style: none;
+    border: 1px solid;
+    margin-top: 2px;
+}
+
+#player-actor {
+    width: 25%;
+    background-color: blue;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+#player-pic {
+    border: 1px solid;
+    height: 70%;
+}
+
+#enemy-actor {
+    border: 2px solid red;
+    width: 25%;
+    background-color: red;
+}
