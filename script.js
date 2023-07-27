@@ -54,7 +54,7 @@ class SoftwareEngineer extends Actor {
             {
                 name: 'Instructor',
                 banter: `"Cool. Cool. Cool." - Instructor`,
-                message: `The Instructor's rapid cooling technique has chilled the code beast!`,
+                message: `The Instructor's rapid cooling technique has chilled the Code Beast!`,
                 attackPower: 3,
                 specialEffect(opponent) {
                     opponent.chilled = true
@@ -62,8 +62,8 @@ class SoftwareEngineer extends Actor {
             },
             {
                 name: 'Assistant Instructor',
-                banter: `"Sorry, the cats are outta my control" - Assistant Instructor`,
-                message: `The Assistant Instructors' feline minions have assaulted the code beast!`,
+                banter: `"I've brought some feline friends to help too!" - Assistant Instructor`,
+                message: `The Assistant Instructors' feline minions have put the fear of God into the Code Beast!`,
                 attackPower: 3,
                 specialEffect(opponent) {
                     opponent.afraid = true
@@ -72,8 +72,8 @@ class SoftwareEngineer extends Actor {
             {
                 name: 'RTT-25 Squad',
                 banter: `"Discord Chat is now open!!!" - Problem Solver`,
-                message: `Random members of RTT-25 ganged up on the code beast in Discord Chat. It was definitely bullying.`,
-                attackPower: random()
+                message: `Random members of RTT-25 ganged up on the Code Beast in Discord Chat. It was definitely bullying.`,
+                attackPower: 3
             }]
         this.hasPartner = hasPartner
         this.partner = partner
@@ -85,17 +85,22 @@ class SoftwareEngineer extends Actor {
     }
     summonAttack(opponent) {
         disableButtons = true
-        this.attack(opponent)
+        messageArray.push([`"Catch these fast fingers!" - ${player.name}`, `"Ora-Ora-Ora-Ora!!!!"- ${player.name}`][Math.floor(Math.random() * 2)])
         if (this.hasPartner) {
-            opponent.lifePoints -= this.partner.attackPower
+            messageArray.push(this.partner.banter)
+            player.partner.attackPower += player.partner.name === 'RTT-25 Squad' ? Math.floor((Math.random() * 3) + 2) : 1  
+            messageArray.push(`${this.name} and ${this.partner.name} teamed up on the ${opponent.name} for ${(this.partner.attackPower + this.attackPower)} damage!`)
+            opponent.lifePoints -= (this.partner.attackPower + this.attackPower)
             if (this.partner.specialEffect) {
                 this.partner.specialEffect(opponent)
             }
-            messageArray.push(this.partner.banter, this.partner.message, `${this.partner.name} did ${this.partner.attackPower} of damage to ${opponent.name}`,  `${this.partner.name} leaves to fight their own code beasts.`)
+            messageArray.push(this.partner.message, `${this.partner.name} leaves to fight their own code beasts.`)
             this.partner = {}
             this.hasPartner = false
             opponent.checkLP()
+            return
         }
+        this.attack(opponent)
     }
     procrastinate() {
         disableButtons = true
@@ -199,7 +204,6 @@ const stage = document.getElementById('stage')
 let gameOver = false //Game over variable
 let disableButtons = true //Story variable to disable clicking on buttons
 let messageArray = [] //An empty string
-let num //A number to be assigned later
 let playerName = 'Fresh Software Engineer'
 let intro = true
 
@@ -222,16 +226,9 @@ function clearMessage() {
     }
 }
 
-function random() {
-    num = Math.floor(Math.random() * 6) + 6
-    return num
-}
-
-
 //Event Listener
 attackButton.addEventListener('click', ()=> { //Attack button
     if (!disableButtons) {
-        messageArray.push([`"Catch these fast fingers!" - ${player.name}`, `"Ora-Ora-Ora-Ora!!!!"- ${player.name}`][Math.floor(Math.random() * 2)])
         player.summonAttack(codeBeast)
         displayMessage()
         enemyStats.innerHTML = `HP: ${codeBeast.lifePoints} ATK: ${codeBeast.attackPower}`
@@ -242,6 +239,7 @@ attackButton.addEventListener('click', ()=> { //Attack button
         disableButtons = true
         }
     }
+    console.log(player.summonsArray[2].attackPower)
 })
 
 summonButton.addEventListener('click', ()=> { //Summon button
