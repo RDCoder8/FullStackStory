@@ -310,6 +310,7 @@ textArea.addEventListener('click', () => {
     }
     if (gameOver && messageArray.length === 0) {
             stage.innerHTML = `<button class="restart" type="reset" onclick="window.location.reload();">Restart And Continue To Fight For Your Story</button>`
+            stage.style.backgroundImage = "none"
             return
     }
 })

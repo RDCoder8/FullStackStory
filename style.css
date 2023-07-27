@@ -21,6 +21,8 @@ body {
     height: 75%;
     display: flex;
     justify-content: space-between;
+    background-image: url(/images/computerdesk.jpg);
+    background-size: 100% 100%;
 }
 
 #textarea {
