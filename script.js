@@ -168,7 +168,7 @@ class FrontendFiend extends Actor {
     }
     checkLazyCount(opponent) {
         if (opponent.lazyCount === 1) {
-            messageArray.push(`"This isn't the time to go nite-nite." - ${this.name}`,)
+            messageArray.push(`"This isn't the time to go nite-nite..." - ${this.name}`,)
             this.attack(opponent)
             return
         }
@@ -183,6 +183,7 @@ class FrontendFiend extends Actor {
             return
         }
         if (opponent.lazyCount > 5) {
+            messageArray.push(`Fine hen`)
             this.attack(opponent)
         }
     }

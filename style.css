@@ -14,6 +14,7 @@ body {
     height: 87vh;
     border: 2px dotted blue;
     padding: 10px;
+    background-color: aqua;
 }
 
 
@@ -60,7 +61,6 @@ button:hover {
 
 #player-actor, #enemy-actor {
     width: 25%;
-    background-color: blue;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -84,10 +84,6 @@ button:hover {
     text-align: center;
     text-decoration: underline;
     background-color: wheat;
-}
-
-#enemy-actor {
-    background-color: red;
 }
 
 #textarea > p {

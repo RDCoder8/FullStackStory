@@ -3,22 +3,34 @@ This Project is a web-based browser game called Full Stack Story. It features a 
 /////////////////////////////////
 
 ////Table of contents
+*Requirements
+*Recommended Modules
+*Installation
+*COnfiguration
+*Troubleshooting
+*Stretch Goals
 /////////////////////////////////
 
-////Requirements (required)
+////Requirements 
 Runs in most modern internet browsers and utilizes HTML, CSS and Javascript.
 /////////////////////////////////
 
-////Recommended modules (optional)
+////Recommended modules 
 None.
 /////////////////////////////////
 
-////Installation (required, unless a separate INSTALL.md is provided)
+////Installation
+None
 /////////////////////////////////
 
-////Configuration (required)
+////Configuration
 /////////////////////////////////
 
 ////Troubleshooting & FAQ (optional)
 /////////////////////////////////
 Stretch Goals (optional)
+
+Add music. (Complete)
+Add animations. 
+Allow players to set the name and picture for the Software Engineer.
+Add scoring system. 
