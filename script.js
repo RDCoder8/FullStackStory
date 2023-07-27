@@ -73,7 +73,7 @@ class SoftwareEngineer extends Actor {
                 name: 'RTT-25 Squad',
                 banter: `"Discord Chat is now open!!!" - Problem Solver`,
                 message: `Random members of RTT-25 ganged up on the Code Beast in Discord Chat. It was definitely bullying.`,
-                attackPower: 3
+                attackPower: 2
             }]
         this.hasPartner = hasPartner
         this.partner = partner
@@ -88,7 +88,7 @@ class SoftwareEngineer extends Actor {
         messageArray.push([`"Catch these fast fingers!" - ${player.name}`, `"Ora-Ora-Ora-Ora!!!!"- ${player.name}`][Math.floor(Math.random() * 2)])
         if (this.hasPartner) {
             messageArray.push(this.partner.banter)
-            player.partner.attackPower += player.partner.name === 'RTT-25 Squad' ? Math.floor((Math.random() * 3) + 2) : 1  
+            player.partner.attackPower += player.partner.name === 'RTT-25 Squad' ? Math.floor((Math.random() * 8) + 2) : 1  
             messageArray.push(`${this.name} and ${this.partner.name} teamed up on the ${opponent.name} for ${(this.partner.attackPower + this.attackPower)} damage!`)
             opponent.lifePoints -= (this.partner.attackPower + this.attackPower)
             if (this.partner.specialEffect) {
@@ -160,7 +160,7 @@ class FrontendFiend extends Actor {
             this.attack(opponent)
             return
         }
-        messageArray.push([`"You're just a little punk. You can't code." - ${this.name}`, `"I've fought felines with more skill than you." - ${this.name}`, `"<i>You're</i> a 'Software Engineer'? Naw. That's cap." - ${this.name}`][Math.floor(Math.random() * 3)])
+        messageArray.push([`"You're just a little punk. You can't code." - ${this.name}`, `"I've fought felines with more skill than you." - ${this.name}`, `"<i>You're</i> a Software Engineer? Naw. That's cap." - ${this.name}`][Math.floor(Math.random() * 3)])
         this.attack(opponent)
     }
     deadlineCharge() {
@@ -239,7 +239,7 @@ attackButton.addEventListener('click', ()=> { //Attack button
         disableButtons = true
         }
     }
-    console.log(player.summonsArray[2].attackPower)
+    console.log(player.summonsArray[2].attackPower, player.summonsArray[1].attackPower, player.summonsArray[0].attackPower)
 })
 
 summonButton.addEventListener('click', ()=> { //Summon button
@@ -255,6 +255,7 @@ summonButton.addEventListener('click', ()=> { //Summon button
     if (gameOver) {
         disableButtons = true
     }
+    console.log(player.summonsArray[2].attackPower, player.summonsArray[1].attackPower, player.summonsArray[0].attackPower)
 })
 
 researchButton.addEventListener('click', ()=> { //Research button
