@@ -24,7 +24,7 @@ class Actor {
         this.banterArray =[]
     }
     checkLP() { //displays current life points and checks for gameOver condition
-        messageArray.push(`${this.name} has ${this.lifePoints} life points left!`)
+        //messageArray.push(`${this.name} has ${this.lifePoints} life points left!`)
         if (this.lifePoints <= 0) {
             gameOver = true
             disableButtons = true
@@ -91,7 +91,7 @@ class SoftwareEngineer extends Actor {
             if (this.partner.specialEffect) {
                 this.partner.specialEffect(opponent)
             }
-            messageArray.push(this.partner.banter, `${this.partner.name} attacked ${opponent.name} for ${this.partner.attackPower} damage`, this.partner.message, `${this.partner.name} leaves to fight their own code beasts.`)
+            messageArray.push(this.partner.banter, this.partner.message, `${this.partner.name} did ${this.partner.attackPower} of damage to ${opponent.name}`,  `${this.partner.name} leaves to fight their own code beasts.`)
             this.partner = {}
             this.hasPartner = false
             opponent.checkLP()
@@ -122,6 +122,7 @@ class SoftwareEngineer extends Actor {
     setPartner() {
         let newPartner = this.summonsArray[Math.floor(Math.random() * 3)]
         this.partner = newPartner
+        newPartner = ''
     }
 }
 
@@ -131,7 +132,6 @@ class FrontendFiend extends Actor {
         super(name, attackPower, lifePoints)
         this.chilled = chilled
         this.afraid = afraid
-        this.poweredUp = false
         this.banterArray = [`"T-t-that d-doesn't matter! I'll show you!" - ${this.name}`, `"S-shut up and code, you loser!" - ${this.name}`, `"Your research changes nothing! You still can't beat me." - ${this.name}` ]
     }
     monsterAttack(opponent) {
@@ -150,18 +150,35 @@ class FrontendFiend extends Actor {
             this.attack(opponent)
             return
         }
+        if (opponent.lazyCount === 5) {
+            messageArray.push(`"TOO LATE NOW, IDIOT!!!" - ${this.name}`)
+            this.attack(opponent)
+            return
+        }
+        messageArray.push([`"You're just a little punk. You can't code." - ${this.name}`, `"I've fought felines with more skill than you." - ${this.name}`, `"<i>You're</i> a 'Software Engineer'? Naw. That's cap." - ${this.name}`][Math.floor(Math.random() * 3)])
+        this.attack(opponent)
     }
     deadlineCharge() {
-        this.attackPower = 999999999
-        this.poweredUp = true
+        this.attackPower = 999
     }
     checkLazyCount(opponent) {
-        if (opponent.lazyCount === 2) {
-            
+        if (opponent.lazyCount === 1) {
+            messageArray.push(`"This isn't the time to go nite-nite." - ${this.name}`,)
+            this.attack(opponent)
+            return
         }
-        if (opponent.lazyCount === 4 && !this.poweredUp) {
+        if (opponent.lazyCount >= 2 && opponent.lazyCount < 5) {
+            messageArray.push([`"Hey, wait, isn't this completely unfair?" - ${this.name}`, `"I won't let you just laze around all day!" - ${this.name}`][Math.floor(Math.random() * 2)])
+            this.attack(opponent)
+            return
+        }
+        if (opponent.lazyCount === 5) {
             this.deadlineCharge()
             messageArray.push(`"You're mine now slacker!!!!" - ${this.name}`, `${this.name}'s attack power has massively increased!`)
+            return
+        }
+        if (opponent.lazyCount > 5) {
+            this.attack(opponent)
         }
     }
 }
@@ -173,7 +190,10 @@ const researchButton = document.getElementById('research')
 const summonButton = document.getElementById('summon')
 const procrastinateButton = document.getElementById('procrastinate')
 const playerActor = document.getElementById('player-pic')
-const enemyActor = document.getElementById('enemy-actor')
+const enemyActor = document.getElementById('enemy-pic')
+const playerStats = document.getElementById('player-stat')
+const enemyStats = document.getElementById('enemy-stat')
+const stage = document.getElementById('stage')
 
 //Game variables
 let gameOver = false //Game over variable
@@ -184,7 +204,7 @@ let playerName = 'Fresh Software Engineer'
 let intro = true
 
 const player = new SoftwareEngineer(playerName, 1, 20)
-const codeBeast = new FrontendFiend('Frontend Fiend', 20, 30)
+const codeBeast = new FrontendFiend('Frontend Fiend', 3, 30)
 
 
 //Functions
@@ -197,33 +217,42 @@ function displayMessage() { //Used to display messages in textArea
 
 function clearMessage() {
     textArea.innerHTML = ''
+    if (!gameOver && messageArray.length === 0) {
+        textArea.innerHTML = `<p>Your Turn, Your Choice.</p>`
+    }
 }
 
 function random() {
-    num = Math.floor(Math.random() * 6) + 3
+    num = Math.floor(Math.random() * 6) + 6
     return num
 }
 
 
-//Event Listeners
+//Event Listener
 attackButton.addEventListener('click', ()=> { //Attack button
     if (!disableButtons) {
+        messageArray.push([`"Catch these fast fingers!" - ${player.name}`, `"Ora-Ora-Ora-Ora!!!!"- ${player.name}`][Math.floor(Math.random() * 2)])
         player.summonAttack(codeBeast)
         displayMessage()
+        enemyStats.innerHTML = `HP: ${codeBeast.lifePoints} ATK: ${codeBeast.attackPower}`
         if (codeBeast.lifePoints > 0) {
-            codeBeast.attack(player)
-        }
+            codeBeast.monsterAttack(player)
     }
-    if (gameOver) {
+        if (gameOver) {
         disableButtons = true
+        }
     }
 })
 
 summonButton.addEventListener('click', ()=> { //Summon button
     if (!disableButtons) {
+        messageArray.push([`"I think I need a bit of help." - ${player.name}`, `"Naw, this beast is straight Nick Cannon, Wild'n Out. I need an assist." - ${player.name}`][Math.floor(Math.random() * 2)])
         player.summon(codeBeast)
         displayMessage()
-        codeBeast.attack(player)
+        enemyStats.innerHTML = `HP: ${codeBeast.lifePoints} ATK: ${codeBeast.attackPower}`
+        if (codeBeast.lifePoints > 0) {
+            codeBeast.monsterAttack(player)
+        }
     }
     if (gameOver) {
         disableButtons = true
@@ -233,8 +262,10 @@ summonButton.addEventListener('click', ()=> { //Summon button
 researchButton.addEventListener('click', ()=> { //Research button
     if (!disableButtons) {
         player.research(codeBeast)
+        attackButton.innerText = "Code Attack: Block"
         player.researchBanter()
         displayMessage()
+        playerStats.innerHTML = `HP: ${player.lifePoints} ATK: ${player.attackPower}` 
         codeBeast.researchBanter()
         codeBeast.attack(player)
     }
@@ -246,8 +277,9 @@ researchButton.addEventListener('click', ()=> { //Research button
 procrastinateButton.addEventListener('click', ()=> { //Procrasinate button
     if (!disableButtons) {
         player.procrastinate()
+        playerStats.innerHTML = `HP: ${player.lifePoints} ATK: ${player.attackPower}`
         displayMessage()
-        codeBeast.attack(player)
+        codeBeast.checkLazyCount(player)
     }
     if (gameOver) {
         disableButtons = true
@@ -259,23 +291,35 @@ textArea.addEventListener('click', () => {
     if (disableButtons) {
         displayMessage()
     }
-    if (messageArray.length === 0 && intro) {
+    if (messageArray.length === 1 && intro) {
         intro = false
         playerActor.innerHTML = `<img src="/images/coder.jpg" alt="">`
         enemyActor.innerHTML = `<img src="/images/monster.png" alt="">`
+        playerStats.innerHTML = `HP: ${player.lifePoints} ATK: ${player.attackPower}`
+        enemyStats.innerHTML = `HP: ${codeBeast.lifePoints} ATK: ${codeBeast.attackPower}`
+        return
     }
     if (messageArray.length === 0 && !gameOver) {
         disableButtons = false
+        enemyStats.innerHTML = `HP: ${codeBeast.lifePoints} ATK: ${codeBeast.attackPower}` //Updates monster on screen after power up
+        playerStats.innerHTML = `HP: ${player.lifePoints} ATK: ${player.attackPower}` //Updates player stats on screen after monster attack
+        return
     }
     if (messageArray.length === 2 && player.lifePoints <= 0) {
+        playerStats.innerHTML = `HP: ${player.lifePoints} ATK: ${player.attackPower}`
         playerActor.innerHTML = `<img src="/images/Hopeless-man.png" alt="">`
+    }
+    if (gameOver && messageArray.length === 0) {
+            stage.innerHTML = `<button class="restart" type="reset" onclick="window.location.reload();">Restart And Continue To Fight For Your Story</button>`
+            return
     }
 })
 
-
-messageArray.push('Story Stuff', 'More Story Stuff', 'Even More Story Stuff')
+//Story Start
+messageArray.push('In the world of technology, there are heroes that battle dangerous monsters.', 'These brave individuals are called Software Engineers and they battle the formidable Code Beasts.', 'The story of their battles often go unheard...until now...', `"How do you defeat a Code Beast? One line at time!" - ${player.name}`)
 displayMessage()
 if (intro) {
     playerActor.innerHTML = ''
     enemyActor.innerHTML = ''
 }
+
