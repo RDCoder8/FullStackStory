@@ -219,7 +219,7 @@ let playerName = 'Fresh Software Engineer'
 let intro = true
 
 const player = new SoftwareEngineer(playerName, 1, 20)
-const codeBeast = new FrontendFiend('Frontend Fiend', 30, 30)
+const codeBeast = new FrontendFiend('Frontend Fiend', 3, 30)
 
 
 ////////////Functions
