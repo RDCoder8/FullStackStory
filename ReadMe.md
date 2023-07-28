@@ -6,7 +6,6 @@ Game: https://rdcoder8.github.io/FullStackStory/
 
 Mark-up File: https://drive.google.com/file/d/1aeh-XRu6odj-3_LniNJ1_XiCY54QUVQp/view?usp=sharing
 
-Mark-up File: https://drive.google.com/file/d/1aeh-XRu6odj-3_LniNJ1_XiCY54QUVQp/view?usp=sharing
 
 /////////////////////////////////
 
