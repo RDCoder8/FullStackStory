@@ -48,6 +48,8 @@ None
 
 ////Troubleshooting & FAQ (optional)
 
+No problems with the current verison of the game but will require troubleshooting to add more animations and other stretch goal features.
+
 /////////////////////////////////
 Stretch Goals (optional)
 
