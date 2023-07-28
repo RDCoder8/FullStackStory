@@ -250,7 +250,6 @@ attackButton.addEventListener('click', ()=> { //Attack button
         disableButtons = true
         }
     }
-    console.log(player.summonsArray[2].attackPower, player.summonsArray[1].attackPower, player.summonsArray[0].attackPower)
 })
 
 summonButton.addEventListener('click', ()=> { //Summon button
@@ -265,7 +264,6 @@ summonButton.addEventListener('click', ()=> { //Summon button
     if (gameOver) {
         disableButtons = true
     }
-    console.log(player.summonsArray[2].attackPower, player.summonsArray[1].attackPower, player.summonsArray[0].attackPower)
 })
 
 researchButton.addEventListener('click', ()=> { //Research button
