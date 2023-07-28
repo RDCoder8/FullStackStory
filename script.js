@@ -31,7 +31,7 @@ class Actor {
             if (player.lifePoints <= 0) {
                 messageArray.push(`${player.name} crumpled at their desk, eyes rolled to the back of their head.`, `${codeBeast.name} has toppled another budding developer.`, `But will they give up? Can ${player.name} rise again to fight the ${codeBeast.name}?`)
             } else {
-                messageArray.push(`${player.name} has crushed the the code beast with through thoughtful strategy.`)
+                messageArray.push(`${player.name} has crushed the the code beast with through thoughtful strategy.`, `But the ${codeBeast.name} was only the first of many challenging monsters.`, `Don't lose heart, ${player.name}! The Backend Brutes await...`)
             }
         }
     }
@@ -302,8 +302,8 @@ textArea.addEventListener('click', () => {
     }
     if (messageArray.length === 1 && intro) {
         intro = false
-        playerActor.innerHTML = `<img class="pulsate-bck" src="/images/coder.jpg" alt="">`
-        enemyActor.innerHTML = `<img class="pulsate-bck" src="/images/monster.png" alt="">`
+        playerActor.innerHTML = `<img class="pulsate-bck" src="https://rdcoder8.github.io/FullStackStory/images/coder.jpg" alt="">`
+        enemyActor.innerHTML = `<img class="pulsate-bck" src="https://rdcoder8.github.io/FullStackStory/images/monster.png" alt="">`
         playerStats.innerHTML = `HP: ${player.lifePoints} ATK: ${player.attackPower}`
         enemyStats.innerHTML = `HP: ${codeBeast.lifePoints} ATK: ${codeBeast.attackPower}`
         return
@@ -316,7 +316,7 @@ textArea.addEventListener('click', () => {
     }
     if (messageArray.length === 2 && player.lifePoints <= 0) {
         playerStats.innerHTML = `HP: ${player.lifePoints} ATK: ${player.attackPower}`
-        playerActor.innerHTML = `<img src="/images/Hopeless-man.png" alt="">`
+        playerActor.innerHTML = `<img src="https://rdcoder8.github.io/FullStackStory/images/Hopeless-man.png" alt="">`
     }
     if (gameOver && messageArray.length === 0) {
             stage.innerHTML = `<button class="restart tracking-in-contract-bck-bottom" type="reset" onclick="window.location.reload();">Restart And Continue To Fight For Your Story</button>`

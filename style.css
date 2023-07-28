@@ -21,7 +21,7 @@ body {
   height: 75%;
   display: flex;
   justify-content: space-between;
-  background-image: url(/images/computerdesk.jpg);
+  background-image: url(https://rdcoder8.github.io/FullStackStory/images/computerdesk.jpg);
   background-size: 100% 100%;
   overflow: hidden;
 
@@ -101,7 +101,7 @@ button.restart {
 
 button.restart:hover {
   color: white;
-  background-image: url(/images/Determination.png);
+  background-image: url(https://rdcoder8.github.io/FullStackStory/images/Determination.png);
   background-size: 100% 100%;
   text-decoration: underline;
 }

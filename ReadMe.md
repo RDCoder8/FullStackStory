@@ -31,6 +31,6 @@ None
 Stretch Goals (optional)
 
 Add music. (Complete)
-Add animations. 
+Add animations.  (Complete)
 Allow players to set the name and picture for the Software Engineer.
 Add scoring system. 
